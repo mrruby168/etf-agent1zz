@@ -1,43 +1,29 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request
 
-app = FastAPI()
+app = FastAPI(
+    title="ETF Flow Intelligence Agent",
+    version="1.0.0"
+)
 
-@app.api_route("/", methods=["GET", "HEAD"])
+@app.get("/")
 def root():
-    return {"status": "ok", "message": "ETF Agent is running"}
-
-@app.api_route("/inference", methods=["GET", "HEAD"])
-def inference_get():
     return {
         "status": "ok",
-        "message": "Use POST with JSON body {}"
+        "agent": "ETF Flow Intelligence Agent"
     }
 
-@app.api_route("/inference", methods=["OPTIONS"])
-def inference_options():
-    return JSONResponse(
-        content={"status": "ok"},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS, HEAD",
-            "Access-Control-Allow-Headers": "*",
-        },
-    )
-
-@app.api_route("/inference", methods=["POST"])
-def inference_post():
+@app.post("/inference")
+async def inference(request: Request):
     return {
         "status": "success",
-        "data": {
+        "signal": {
             "title": "Daily ETF Flow Report",
-            "summary": "BTC ETF Flow: 120M USD | ETH ETF Flow: -15M USD | Market Trend: Bullish",
+            "summary": "BTC ETF inflow, ETH outflow, market bias bullish",
+            "confidence": 0.7,
+            "bias": "Bullish",
             "metrics": {
                 "btc_etf_flow": "120M USD",
-                "eth_etf_flow": "-15M USD",
-                "trend": "Bullish"
-            },
-            "confidence": 0.7,
-            "updated_at": "2026-01-18"
+                "eth_etf_flow": "-15M USD"
+            }
         }
     }
