@@ -3,23 +3,18 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-# Root (warden check)
-@app.get("/")
-@app.head("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {"status": "ok", "message": "ETF Agent is running"}
 
-# GET /inference (warden verify)
-@app.get("/inference")
-@app.head("/inference")
+@app.api_route("/inference", methods=["GET", "HEAD"])
 def inference_get():
     return {
         "status": "ok",
         "message": "Use POST with JSON body {}"
     }
 
-# OPTIONS /inference (CORS / preflight)
-@app.options("/inference")
+@app.api_route("/inference", methods=["OPTIONS"])
 def inference_options():
     return JSONResponse(
         content={"status": "ok"},
@@ -30,9 +25,8 @@ def inference_options():
         },
     )
 
-# POST /inference (real logic)
-@app.post("/inference")
-def inference():
+@app.api_route("/inference", methods=["POST"])
+def inference_post():
     return {
         "status": "success",
         "data": {
